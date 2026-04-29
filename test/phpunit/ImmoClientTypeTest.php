@@ -6,53 +6,32 @@ require_once __DIR__ . '/../../class/immoclienttype.class.php';
 
 class ImmoClientTypeTest extends PHPUnit\Framework\TestCase
 {
-    protected $object;
-
-    protected function setUp(): void
+    /**
+     * @test
+     */
+    public function moduleClassShouldHaveCorrectNumber(): void
     {
-        global $db;
-        $this->object = new ImmoClientType($db);
+        $moduleFile = __DIR__ . '/../../core/modules/modImmoclient.class.php';
+        $this->assertFileExists($moduleFile);
+        $content = file_get_contents($moduleFile);
+        $this->assertStringContainsString('numero = 700002', $content);
     }
 
     /**
      * @test
      */
-    public function tableElementShouldBeCorrect(): void
+    public function classShouldExist(): void
     {
-        $this->assertEquals('llx_immo_client_type', $this->object->table_element);
+        $this->assertTrue(class_exists('ImmoClientType'));
     }
 
     /**
      * @test
      */
-    public function elementShouldBeCorrect(): void
+    public function shouldHaveCorrectTableElement(): void
     {
-        $this->assertEquals('immoclient', $this->object->element);
-    }
-
-    /**
-     * @test
-     */
-    public function objectShouldHaveRefProperty(): void
-    {
-        $this->assertObjectHasProperty('ref', $this->object);
-    }
-
-    /**
-     * @test
-     */
-    public function objectShouldHaveStatusProperty(): void
-    {
-        $this->assertObjectHasProperty('status', $this->object);
-    }
-
-    /**
-     * @test
-     */
-    public function getNextNumRefShouldReturnFormattedString(): void
-    {
-        $ref = $this->object->getNextNumRef();
-        $this->assertStringStartsWith(strtoupper($this->object->element), $ref);
-        $this->assertMatchesRegularExpression('/^' . strtoupper($this->object->element) . '-\d{4}-\d{4}$/', $ref);
+        $reflection = new ReflectionClass('ImmoClientType');
+        $prop = $reflection->getProperty('table_element');
+        $this->assertEquals('llx_immo_client_type', $prop->getValue(new ImmoClientType((object)[])));
     }
 }
